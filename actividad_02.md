@@ -4,10 +4,13 @@
 # Actividad
 - Calcular la diferencia entre dos imagenes similares y encontrar cuales son sus diferencias.
 ## resultado
+
 |imagen izquierda|imagen derecha|diferencia|
 |-|-|-|
 |![left](res/left.png)|![rigth](res/right.png)|![diff](res/difference.png)|
+
 - Calcular la convolucion de la imagen de la izquierda con los diferentes objetos.
+
 |kernel|convolucion|
 |-|-|
 |![kernel 1](res/Object-1.png)|![convolucion 1](res/convolution-1.png)|
