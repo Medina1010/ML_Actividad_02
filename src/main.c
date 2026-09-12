@@ -12,6 +12,8 @@ void convolution_image(const stbi_image *image, const stbi_image *kernel,
                        stbi_image *result, int channels);
 void substract_image(const stbi_image *image_1, const stbi_image *image_2,
                      stbi_image *result, int channels);
+void search_image(const stbi_image *image, const stbi_image *kernel,
+                       stbi_image *result, int channels);
 void stbi_load_simple(char *path, stbi_image *image, int channels);
 void stbi_write_png_simple(char *path, stbi_image *image, int channels);
 
@@ -50,15 +52,58 @@ int main(int argc, char** argv) {
     sprintf(str, "res/convolution-%d.png", i);
     stbi_write_png_simple(str, &result, channels);
     // cleaning the memory
+    stbi_image_free(result.data);
+    // doing the search
+
+    search_image(&left_image, &image_kernel,
+			       &result, channels);
+    sprintf(str, "res/search-%d.png", i);
+    stbi_write_png_simple(str, &result, channels);
+    printf("[%s]: done the %d/5 standard deviation\n", argv[0], i);
+    // cleaning the memory
     stbi_image_free(image_kernel.data);
     stbi_image_free(result.data);
     printf("[%s]: done the %d/5 convolution\n", argv[0], i);
   }
+
   stbi_image_free(left_image.data);
   stbi_image_free(right_image.data);
 
   return 0;
 }
+
+void search_image(const stbi_image *image, const stbi_image *kernel,
+                       stbi_image *result, int channels) {
+  // creating room for the result
+  result->width = (image->width - kernel->width + 1);
+  result->height = (image->height - kernel->height + 1);
+  result->data = malloc(result->width * result->height * channels);
+  int x, y, max=0;
+  float accumulator, average;
+  // through the image
+  for (int j = 0; j < result->height; j++) {
+    for (int i = 0; i < result->width; i++) {
+      // through the channels
+      for (int c = 0; c < channels; c++) {
+        // through the kernel
+        accumulator = 0;
+        for (int kj = 0; kj < kernel->height; kj++) {
+          for (int ki = 0; ki < kernel->width; ki++) {
+            accumulator +=
+                pow((int)(image->data[channels * (i + ki + image->width * (j + kj)) + c]) -
+                (int)(kernel->data[channels * (ki + kernel->width * kj) + c]), 2);
+          }
+        }
+        result->data[channels * (i + result->width * j) + c] = 255 -
+            (unsigned char)sqrt(accumulator / (kernel->width*kernel->height));
+	average += result->data[channels * (i + result->width * j) + c];
+      }
+      if (average > max) { x = i; y = j; max = average;}
+      average = 0;
+    }
+  }
+  printf("%d,%d\n", x, y);
+};
 
 void convolution_image(const stbi_image *image, const stbi_image *kernel,
                        stbi_image *result, int channels) {
