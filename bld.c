@@ -6,7 +6,7 @@
 
 int main(int argc, char **argv) {
   rebuild(argc, argv);
-  std_compile("src/main");
+  cmd("gcc -o src/main src/main.c -lm -O3 -ffast-math");
   cmd("src/main");
   return 0;
 }
