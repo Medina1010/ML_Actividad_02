@@ -30,9 +30,11 @@ Ademas de la tarea se hizo un metodo para encontrar los objetos en la imagen de 
 |![kernel 5](res/Object-5.png)|![search 5](res/search-5.png)|365,511|
 
 Para la imagen a color el resultado de la busqueda es la siguiente:
+
 ![busqueda color](res/places_image.png)
 
 y para la imagen en escala de grises es la siguiente:
+
 ![busqueda color](res/places_image_gray.png)
 
 - Realizar un mapa conceptual.
